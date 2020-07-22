@@ -96,7 +96,10 @@
     });
 
     $("#submitIssue").click(function(){
-        missing = 0;
+        grecaptcha.ready(function() {
+          grecaptcha.execute('reCAPTCHA_site_key', {action: 'submit'}).then(function(token) {
+              // Add your logic to submit to your backend server here.
+              missing = 0;
         // Check if a required input is empty
         $('#issueForm :input').each(function() {
             if($(this).prop("required")){
@@ -150,6 +153,9 @@
             response.className = "alert alert-warning";
             response.innerHTML = "Veuillez renseigner tous le champs obligatoire.";
         }
+          });
+        });
+        
     })
 
     function addIsotope(list) {
