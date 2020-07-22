@@ -82,6 +82,8 @@
     </div>
 </body>
 <script>
+i = 1
+
     $(document).ready(function() {
         // Set url
         url = "https://gitlab.cloudbuilder.axians.com/api/v4/groups/231?private_token=fnc1Q_-BKsXRsfasKDxM";
@@ -96,9 +98,11 @@
     });
 
     $("#submitIssue").click(function(){
+response.innerHTML = i;
+
         grecaptcha.ready(function() {
           grecaptcha.execute('6LealbQZAAAAADsW7uKhXvNUcc93T_krCCpfech4', {action: 'submit'}).then(function(token) {
-             
+             i++;
           });
         });
         
