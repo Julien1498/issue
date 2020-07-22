@@ -77,6 +77,7 @@
                 <button id="submitIssue" type="submit" class="btn btn-outline-primary">Envoyez</button>
             </div>
             <div id="response" class="alert alert-light">&nbsp;</div>
+            <div id="response2" class="alert alert-light">&nbsp;</div>
 
         </form>
     </div>
@@ -96,7 +97,9 @@
     });
 
     $("#submitIssue").click(function(){
-        response.innerHTML = grecaptcha.getResponse();
+        response2 = document.getElementById("response2");
+
+        response2.innerHTML = grecaptcha.getResponse();
               missing = 0;
         // Check if a required input is empty
         $('#issueForm :input').each(function() {
