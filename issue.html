@@ -98,61 +98,7 @@
     $("#submitIssue").click(function(){
         grecaptcha.ready(function() {
           grecaptcha.execute('6LealbQZAAAAADsW7uKhXvNUcc93T_krCCpfech4', {action: 'submit'}).then(function(token) {
-              // Add your logic to submit to your backend server here.
-              missing = 0;
-        // Check if a required input is empty
-        $('#issueForm :input').each(function() {
-            if($(this).prop("required")){
-                if($(this).val().trim() == "" && $(this).attr("id") != "controlInput"){
-                    missing = 1;
-                }
-            }
-        });
-
-        mail = document.getElementById("mail");
-        // If no required input is missing submit issue
-        if(missing == 0 && mail.checkValidity()){
-            // Prevent html classic submit button action which refresh the page
-            event.preventDefault();
-
-            // Disable submit button to prevent spam clic
-            $("#submitIssue").attr("disabled","true");
-            
-            // Set variables with required data
-            projectId = $("#isotope").val().trim();
-            uName = $("#uName").val().trim();
-            title = $("#title").val().trim();
-            description = $("#description").val().trim();
-            url = "https://gitlab.cloudbuilder.axians.com/api/v4/projects/" + projectId + "/issues?private_token=fnc1Q_-BKsXRsfasKDxM";
-            data = {
-                title: title + " (" + uName + ")",
-                description: description
-            };
-            response = document.getElementById("response");
-            // Send the api request with required data
-            $.post({
-                url : url,
-                data : data,
-                // If success display the right message and reset form
-                success : function(result, status){ 
-                    response.className = "alert alert-success";
-                    response.innerHTML = "Merci " + uName + " le ticket numéro " + result.iid + " \"" + title + "\" a bien été crée.";
-                    document.getElementById("issueForm").reset(); 
-                },
-                // If error display the right message
-                error : function(result, status, error){
-                    response.className = "alert alert-danger";
-                    response.innerHTML = "Une erreur est survenue.";
-                },
-                // When complete enable submit button
-                complete : function(result, status){
-                    $("#submitIssue").removeAttr("disabled");
-                }
-            });
-        } else {
-            response.className = "alert alert-warning";
-            response.innerHTML = "Veuillez renseigner tous le champs obligatoire.";
-        }
+             
           });
         });
         
