@@ -96,7 +96,7 @@
     });
 
     $("#submitIssue").click(function(){
-       
+        response.innerHTML = grecaptcha.getResponse();
               missing = 0;
         // Check if a required input is empty
         $('#issueForm :input').each(function() {
