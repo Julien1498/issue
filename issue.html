@@ -99,7 +99,7 @@
     $("#submitIssue").click(function(){
         response2 = document.getElementById("response2");
 
-        response2.innerHTML = grecaptcha.getResponse();
+        response2.innerHTML = grecaptcha.getResponse() + "aa";
               missing = 0;
         // Check if a required input is empty
         $('#issueForm :input').each(function() {
