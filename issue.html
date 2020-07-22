@@ -72,28 +72,16 @@
                 <label id="descriptionLabel" for="description">*Description :</label>
                 <textarea id="description" class="form-control" name="description" rows="5" placeholder="ex: Internet ne marche plus" required></textarea>
             </div>
-
+            <div class="g-recaptcha" data-sitekey="your_site_key"></div>
             <div class="form-group">
                 <button id="submitIssue" type="submit" class="btn btn-outline-primary">Envoyez</button>
             </div>
             <div id="response" class="alert alert-light">&nbsp;</div>
-            <button class="g-recaptcha" 
-            data-sitekey="6LealbQZAAAAADsW7uKhXvNUcc93T_krCCpfech4" 
-            data-callback='onSubmit' 
-            data-action='submit'
-            id="demo-form"
-            type="submit">Submit</button>
+
         </form>
     </div>
 </body>
 <script>
-    function onSubmit(token) {
-      document.getElementById("demo-form").submit();
-    }
-  </script>
-<script>
-i = 1
-
     $(document).ready(function() {
         // Set url
         url = "https://gitlab.cloudbuilder.axians.com/api/v4/groups/231?private_token=fnc1Q_-BKsXRsfasKDxM";
@@ -108,15 +96,63 @@ i = 1
     });
 
     $("#submitIssue").click(function(){
-response.innerHTML = i;
-
-        grecaptcha.ready(function() {
-          grecaptcha.execute('6LealbQZAAAAADsW7uKhXvNUcc93T_krCCpfech4', {action: 'submit'}).then(function(token) {
-             i++;
-          });
+       
+              missing = 0;
+        // Check if a required input is empty
+        $('#issueForm :input').each(function() {
+            if($(this).prop("required")){
+                if($(this).val().trim() == "" && $(this).attr("id") != "controlInput"){
+                    missing = 1;
+                }
+            }
         });
-        
-    })
+
+        mail = document.getElementById("mail");
+        // If no required input is missing submit issue
+        if(missing == 0 && mail.checkValidity()){
+            // Prevent html classic submit button action which refresh the page
+            event.preventDefault();
+
+            // Disable submit button to prevent spam clic
+            $("#submitIssue").attr("disabled","true");
+            
+            // Set variables with required data
+            projectId = $("#isotope").val().trim();
+            uName = $("#uName").val().trim();
+            title = $("#title").val().trim();
+            description = $("#description").val().trim();
+            url = "https://gitlab.cloudbuilder.axians.com/api/v4/projects/" + projectId + "/issues?private_token=fnc1Q_-BKsXRsfasKDxM";
+            data = {
+                title: title + " (" + uName + ")",
+                description: description
+            };
+            response = document.getElementById("response");
+            // Send the api request with required data
+            $.post({
+                url : url,
+                data : data,
+                // If success display the right message and reset form
+                success : function(result, status){ 
+                    response.className = "alert alert-success";
+                    response.innerHTML = "Merci " + uName + " le ticket numéro " + result.iid + " \"" + title + "\" a bien été crée.";
+                    document.getElementById("issueForm").reset(); 
+                },
+                // If error display the right message
+                error : function(result, status, error){
+                    response.className = "alert alert-danger";
+                    response.innerHTML = "Une erreur est survenue.";
+                },
+                // When complete enable submit button
+                complete : function(result, status){
+                    $("#submitIssue").removeAttr("disabled");
+                }
+            });
+        } else {
+            response.className = "alert alert-warning";
+            response.innerHTML = "Veuillez renseigner tous le champs obligatoire.";
+        }
+          });
+
 
     function addIsotope(list) {
         $.each(list.projects, function(key, value){
