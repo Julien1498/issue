@@ -27,7 +27,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
     integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
     crossorigin="anonymous"></script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LealbQZAAAAADsW7uKhXvNUcc93T_krCCpfech4"></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
 </head>
 
 <body>
@@ -77,10 +77,19 @@
                 <button id="submitIssue" type="submit" class="btn btn-outline-primary">Envoyez</button>
             </div>
             <div id="response" class="alert alert-light">&nbsp;</div>
-
+            <button class="g-recaptcha" 
+            data-sitekey="6LealbQZAAAAADsW7uKhXvNUcc93T_krCCpfech4" 
+            data-callback='onSubmit' 
+            data-action='submit'
+            id="demo-form">Submit</button>
         </form>
     </div>
 </body>
+<script>
+    function onSubmit(token) {
+      document.getElementById("demo-form").submit();
+    }
+  </script>
 <script>
 i = 1
 
