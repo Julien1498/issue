@@ -44,7 +44,8 @@
 
             <div class="form-group">
                 <label id="civLabel" for="civility">*Civilité :</label>
-                <label class="radio-inline"><input type="radio" name="civ" value="Monsieur" checked> Monsieur</label>
+                <label class="radio-inline"><input type="radio" name="civ" checked disabled>Sélectionner un projet</label>
+                <label class="radio-inline"><input type="radio" name="civ" value="Monsieur"> Monsieur</label>
                 <label class="radio-inline"><input type="radio" name="civ" value="Madame"> Madame</label>
             </div>
 
@@ -101,8 +102,8 @@
     });
 
     $("#submitIssue").click(function(){
-        var response = grecaptcha.getResponse();
-    if(response.length == 0) 
+    captchaResponse = grecaptcha.getResponse();
+    if(captchaResponse.length == 0) 
     { 
         //reCaptcha not verified
         alert("please verify you are humann!"); 
@@ -162,6 +163,7 @@
                 // When complete enable submit button
                 complete : function(result, status){
                     $("#submitIssue").removeAttr("disabled");
+                    grecaptcha.reset();
                 }
             });
         } else {
