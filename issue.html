@@ -27,7 +27,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"
     integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
     crossorigin="anonymous"></script>
-    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body>
@@ -43,9 +43,9 @@
             </div>
 
             <div class="form-group">
-                <label id="nameLabel" for="civility">*Civilité :</label>
-                <label class="radio-inline"><input type="radio" name="civ" checked> Monsieur</label>
-                <label class="radio-inline"><input type="radio" name="civ"> Madame</label>
+                <label id="civLabel" for="civility">*Civilité :</label>
+                <label class="radio-inline"><input type="radio" name="civ" value="Monsieur" checked> Monsieur</label>
+                <label class="radio-inline"><input type="radio" name="civ" value="Madame"> Madame</label>
             </div>
 
             <div class="form-group">
@@ -54,12 +54,17 @@
             </div>
 
             <div class="form-group">
-                <label id="nameLabel" for="mail">*Adresse email :</label>
+                <label id="mailLabel" for="mail">*Adresse email :</label>
                 <input type="email" class="form-control" id="mail" name="mail" placeholder="ex: email@gmail.com" required>
             </div>
 
             <div class="form-group">
-                <label id="nameLabel" for="institution">*Institution :</label>
+                <label id="countryLabel" for="country">*Pays :</label>
+                <input type="text" class="form-control" id="country" name="country" placeholder="ex: France" required>
+            </div>
+
+            <div class="form-group">
+                <label id="institutionLabel" for="institution">*Institution :</label>
                 <input type="text" class="form-control" id="institution" name="institution" placeholder="ex: Vinci" required>
             </div>
 
@@ -72,24 +77,23 @@
                 <label id="descriptionLabel" for="description">*Description :</label>
                 <textarea id="description" class="form-control" name="description" rows="5" placeholder="ex: Internet ne marche plus" required></textarea>
             </div>
-            <div class="g-recaptcha" data-sitekey="6LdTnbQZAAAAAIQxfjdxvZMUQHEzgyEMejznH4xY"></div>
+
             <div class="form-group">
                 <button id="submitIssue" type="submit" class="btn btn-outline-primary">Envoyez</button>
             </div>
             <div id="response" class="alert alert-light">&nbsp;</div>
-            <div id="response2" class="alert alert-light">&nbsp;</div>
-
+            <div class="g-recaptcha" data-sitekey="6LdTnbQZAAAAAIQxfjdxvZMUQHEzgyEMejznH4xY"></div>
         </form>
     </div>
 </body>
 <script>
     $(document).ready(function() {
         // Set url
-        url = "https://gitlab.cloudbuilder.axians.com/api/v4/groups/231?private_token=fnc1Q_-BKsXRsfasKDxM";
+        url = "https://gitlab.cloudbuilder.axians.com/api/v4/groups/231?private_token=Asbcg1t98ge5fJrJ9Zij";
         // Send the api request
         $.get({
             url : url,
-            // If success display the right message and reset form
+            // If success add isotope to list
             success : function(result, status){ 
                 addIsotope(result)
             }
@@ -97,10 +101,15 @@
     });
 
     $("#submitIssue").click(function(){
-        response2 = document.getElementById("response2");
-
-        response2.innerHTML = grecaptcha.getResponse() + "aa";
-              missing = 0;
+        var response = grecaptcha.getResponse();
+    if(response.length == 0) 
+    { 
+        //reCaptcha not verified
+        alert("please verify you are humann!"); 
+        evt.preventDefault();
+        return false;
+    } else {
+        missing = 0;
         // Check if a required input is empty
         $('#issueForm :input').each(function() {
             if($(this).prop("required")){
@@ -121,13 +130,18 @@
             
             // Set variables with required data
             projectId = $("#isotope").val().trim();
+            civ = $("input:radio[name=civ]:checked").val().trim();
+            mail = $("#mail").val().trim();
             uName = $("#uName").val().trim();
+            country = $("#country").val().trim();
+            institution = $("#institution").val().trim();
             title = $("#title").val().trim();
             description = $("#description").val().trim();
-            url = "https://gitlab.cloudbuilder.axians.com/api/v4/projects/" + projectId + "/issues?private_token=fnc1Q_-BKsXRsfasKDxM";
+
+            url = "https://gitlab.cloudbuilder.axians.com/api/v4/projects/" + projectId + "/issues?private_token=Asbcg1t98ge5fJrJ9Zij";
             data = {
-                title: title + " (" + uName + ")",
-                description: description
+                title: title,
+                description: civ + " " + uName + ", " + institution + ", " + country + ", " + mail + ": " + description
             };
             response = document.getElementById("response");
             // Send the api request with required data
@@ -154,8 +168,8 @@
             response.className = "alert alert-warning";
             response.innerHTML = "Veuillez renseigner tous le champs obligatoire.";
         }
-          });
-
+    }
+    })
 
     function addIsotope(list) {
         $.each(list.projects, function(key, value){
